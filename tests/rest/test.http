@@ -1,0 +1,17 @@
+### Get all
+GET http://localhost:3000/api/salidalimpieza
+
+### Get all
+GET http://localhost:3000/transferencia
+
+### Get all
+GET http://localhost:3000/nuevo
+
+### Get all
+GET http://localhost:3000/pesaje
+
+### Get all
+GET http://localhost:3000/asignacion
+
+### Get all
+GET http://localhost:3000/tara

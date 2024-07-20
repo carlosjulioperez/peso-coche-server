@@ -1,0 +1,11 @@
+### Get all
+GET http://localhost:3000/api/getall/asignacion
+
+### Execute a trx
+PUT http://localhost:3000/api/put/asignacion
+Content-Type: application/json
+
+{
+  "codigo_video_jet": "VJ12345",
+  "id": "1"
+}

@@ -1,0 +1,12 @@
+### Get all
+GET http://localhost:3000/api/getall/salidalimpieza
+
+### Execute a trx
+PUT http://localhost:3000/api/put/salidalimpieza
+Content-Type: application/json
+
+{
+  "tipo_carne": "R",
+  "coche": "5",
+  "id": "1"
+}

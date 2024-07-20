@@ -1,0 +1,11 @@
+### Get all
+GET http://localhost:3000/api/getall/nuevo
+
+### Execute a trx
+PUT http://localhost:3000/api/put/nuevo
+Content-Type: application/json
+
+{
+  "turno_nuevo": "5",
+  "id": "1"
+}

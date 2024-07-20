@@ -1,0 +1,11 @@
+### Get all
+GET http://localhost:3000/api/getall/pesaje
+
+### Execute a trx
+PUT http://localhost:3000/api/put/pesaje
+Content-Type: application/json
+
+{
+  "peso_bruto": "1100",
+  "id": "1"
+}

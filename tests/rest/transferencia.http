@@ -1,0 +1,11 @@
+### Get all
+GET http://localhost:3000/api/getall/transferencia
+
+### Execute a trx
+PUT http://localhost:3000/api/put/transferencia
+Content-Type: application/json
+
+{
+  "coche_nuevo": "5",
+  "id": "1"
+}

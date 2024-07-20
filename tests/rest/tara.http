@@ -1,0 +1,12 @@
+### Get all
+GET http://localhost:3000/api/getall/tara
+
+### Execute a trx
+PUT http://localhost:3000/api/put/tara
+Content-Type: application/json
+
+{
+  "peso_tara": "1000",
+  "peso_neto": "100",
+  "id": "1"
+}
