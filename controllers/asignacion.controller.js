@@ -1,29 +1,32 @@
 const pool = require('../config/database');
 
-const getAllAsignacion = (request, response) => {
-  const query1 = `
-    SELECT e.dia_produccion, e.control_rociado, e.coche, e.lote_barco,
-    e.especies_talla, e.no_mesa, e.tipo_carne, 
-    e.fecha as fecha_sa, d.fecha as fecha_tr, d.coche_nuevo,
-    c.fecha as fecha_nu, c.turno_nuevo,
-    b.fecha as fecha_pe, b.peso_bruto 
-    FROM app_coche_asignacion AS a
-    INNER JOIN app_coche_pesaje AS b ON a.pesaje_id = b.id
-    INNER JOIN app_coche_nuevo AS c ON b.nuevo_id = c.id
-    INNER JOIN app_coche_transferencia AS d ON c.transferencia_id = d.id
-    INNER JOIN app_coche_salida_limpieza AS e ON d.salida_limpieza_id = e.id
-    where a.completado = false;
-  `;
-
-  pool.query(query1, (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
+const getAllAsignacion = async (request, response) => {
+  const client = await pool.connect();
+  try {
+    pool.query(`
+      SELECT a.id, e.dia_produccion, e.control_rociado, e.coche, e.lote_barco,
+      e.especies_talla, e.no_mesa, e.tipo_carne, 
+      e.fecha as fecha_sa, d.fecha as fecha_tr, d.coche_nuevo,
+      c.fecha as fecha_nu, c.turno_nuevo,
+      b.fecha as fecha_pe, b.peso_bruto 
+      FROM app_coche_asignacion AS a
+      INNER JOIN app_coche_pesaje AS b ON a.pesaje_id = b.id
+      INNER JOIN app_coche_nuevo AS c ON b.nuevo_id = c.id
+      INNER JOIN app_coche_transferencia AS d ON c.transferencia_id = d.id
+      INNER JOIN app_coche_salida_limpieza AS e ON d.salida_limpieza_id = e.id
+      where a.completado = false;
+    `, (error, results) => {
+      response.status(200).json(results.rows)
+    });
+  } catch (error) {
+    console.error(err);
+    res.send('Error ' + err);
+  } finally {
+    client.release(); // Release the client connection
+  }
 }
 
-const trx = async (request, response) => {
+const putAsignacion = async (request, response) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN'); // Start the transaction
@@ -50,5 +53,5 @@ const trx = async (request, response) => {
 
 module.exports = {
   getAllAsignacion,
-  trx
+  putAsignacion
 };

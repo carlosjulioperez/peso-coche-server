@@ -22,6 +22,7 @@ CREATE TABLE app_coche_salida_limpieza (
   tipo_carne CHAR(1),
   coche INTEGER,
   fecha TIMESTAMP,
+  guardado BOOLEAN DEFAULT FALSE,
   completado BOOLEAN DEFAULT FALSE
 );
 
@@ -31,6 +32,7 @@ CREATE TABLE app_coche_transferencia (
   salida_limpieza_id INTEGER,
   coche_nuevo INTEGER,
   fecha TIMESTAMP,
+  guardado BOOLEAN DEFAULT FALSE,
   completado BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (salida_limpieza_id) REFERENCES app_coche_salida_limpieza(id)
 );
@@ -41,6 +43,7 @@ CREATE TABLE app_coche_nuevo (
   transferencia_id INTEGER,
   turno_nuevo INTEGER,
   fecha TIMESTAMP,
+  guardado BOOLEAN DEFAULT FALSE,
   completado BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (transferencia_id) REFERENCES app_coche_transferencia(id)
 );
@@ -51,6 +54,7 @@ CREATE TABLE app_coche_pesaje (
   nuevo_id INTEGER,
   peso_bruto INTEGER,
   fecha TIMESTAMP,
+  guardado BOOLEAN DEFAULT FALSE,
   completado BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (nuevo_id) REFERENCES app_coche_nuevo(id)
 );
@@ -61,6 +65,7 @@ CREATE TABLE app_coche_asignacion (
   pesaje_id INTEGER,
   codigo_video_jet VARCHAR(50),
   fecha TIMESTAMP,
+  guardado BOOLEAN DEFAULT FALSE,
   completado BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (pesaje_id) REFERENCES app_coche_pesaje(id)
 );
@@ -72,6 +77,7 @@ CREATE TABLE app_coche_tara (
   peso_tara INTEGER,
   peso_neto INTEGER,  
   fecha TIMESTAMP,
+  guardado BOOLEAN DEFAULT FALSE,
   completado BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (asignacion_id) REFERENCES app_coche_asignacion(id)
 );

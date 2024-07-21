@@ -1,27 +1,30 @@
 const pool = require('../config/database');
 
-const getAllPesaje = (request, response) => {
-  const query1 = `
-    SELECT d.dia_produccion, d.control_rociado, d.coche, d.lote_barco,
-    d.especies_talla, d.no_mesa, d.tipo_carne, 
-    d.fecha as fecha_sa, c.fecha as fecha_tr, c.coche_nuevo, 
-    b.fecha as fecha_nu, b.turno_nuevo 
-    FROM app_coche_pesaje AS a
-    INNER JOIN app_coche_nuevo AS b ON a.nuevo_id = b.id
-    INNER JOIN app_coche_transferencia AS c ON b.transferencia_id = c.id
-    INNER JOIN app_coche_salida_limpieza AS d ON c.salida_limpieza_id = d.id
-    where a.completado = false;
-  `;
-
-  pool.query(query1, (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
+const getAllPesaje = async (request, response) => {
+  const client = await pool.connect();
+  try {
+    pool.query(`
+      SELECT a.id, d.dia_produccion, d.control_rociado, d.coche, d.lote_barco,
+      d.especies_talla, d.no_mesa, d.tipo_carne, 
+      d.fecha as fecha_sa, c.fecha as fecha_tr, c.coche_nuevo, 
+      b.fecha as fecha_nu, b.turno_nuevo 
+      FROM app_coche_pesaje AS a
+      INNER JOIN app_coche_nuevo AS b ON a.nuevo_id = b.id
+      INNER JOIN app_coche_transferencia AS c ON b.transferencia_id = c.id
+      INNER JOIN app_coche_salida_limpieza AS d ON c.salida_limpieza_id = d.id
+      where a.completado = false
+    `, (error, results) => {
+      response.status(200).json(results.rows)
+    });
+  } catch (error) {
+    console.error(err);
+    res.send('Error ' + err);
+  } finally {
+    client.release(); // Release the client connection
+  }
 }
 
-const trx = async (request, response) => {
+const putPesaje = async (request, response) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN'); // Start the transaction
@@ -48,5 +51,5 @@ const trx = async (request, response) => {
 
 module.exports = {
   getAllPesaje,
-  trx
+  putPesaje
 };

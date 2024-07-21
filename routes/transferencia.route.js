@@ -3,6 +3,6 @@ const router = express.Router();
 const transferenciaController = require('../controllers/transferencia.controller');
 
 router.get('/getall/transferencia', transferenciaController.getAllTransferencia);
-router.put('/put/transferencia', transferenciaController.trx);
+router.put('/put/transferencia', transferenciaController.putTransferencia);
 
 module.exports = router;

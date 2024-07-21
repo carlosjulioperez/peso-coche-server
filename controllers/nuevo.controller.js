@@ -1,25 +1,28 @@
 const pool = require('../config/database');
 
-const getAllNuevo = (request, response) => {
-  const query1 = `
-    SELECT c.dia_produccion, c.control_rociado, c.coche, c.lote_barco,
-    c.especies_talla, c.no_mesa, c.tipo_carne, 
-    c.fecha as fecha_sa, b.fecha as fecha_tr, b.coche_nuevo
-    FROM app_coche_nuevo AS a
-    INNER JOIN app_coche_transferencia AS b ON a.transferencia_id = b.id
-    INNER JOIN app_coche_salida_limpieza AS c ON b.salida_limpieza_id = c.id
-    where a.completado = false;
-  `;
-
-  pool.query(query1, (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
+const getAllNuevo = async (request, response) => {
+  const client = await pool.connect();
+  try {
+    pool.query(`
+      SELECT a.id, c.dia_produccion, c.control_rociado, c.coche, c.lote_barco,
+      c.especies_talla, c.no_mesa, c.tipo_carne, 
+      c.fecha as fecha_sa, b.fecha as fecha_tr, b.coche_nuevo
+      FROM app_coche_nuevo AS a
+      INNER JOIN app_coche_transferencia AS b ON a.transferencia_id = b.id
+      INNER JOIN app_coche_salida_limpieza AS c ON b.salida_limpieza_id = c.id
+      where a.completado = false
+    `, (error, results) => {
+      response.status(200).json(results.rows)
+    });
+  } catch (error) {
+    console.error(err);
+    res.send('Error ' + err);
+  } finally {
+    client.release(); // Release the client connection
+  }
 }
 
-const trx = async (request, response) => {
+const putNuevo = async (request, response) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN'); // Start the transaction
@@ -46,5 +49,5 @@ const trx = async (request, response) => {
 
 module.exports = {
   getAllNuevo,
-  trx
+  putNuevo
 };

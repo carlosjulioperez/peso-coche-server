@@ -1,12 +1,17 @@
 const pool = require('../config/database');
 
-const getAllSalidaLimpieza = (request, response) => {
-  pool.query("select * FROM app_coche_salida_limpieza WHERE completado=false order by no_control desc", (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  })
+const getAllSalidaLimpieza = async (request, response) => {
+  const client = await pool.connect();
+  try {
+    pool.query("select * FROM app_coche_salida_limpieza WHERE completado=false order by no_control desc", (error, results) => {
+      response.status(200).json(results.rows)
+    });
+  } catch (error) {
+    console.error(err);
+    res.send('Error ' + err);
+  } finally {
+    client.release(); // Release the client connection
+  }
 };
 
 // const putSalidaLimpieza = (request, response) => {
@@ -21,7 +26,7 @@ const getAllSalidaLimpieza = (request, response) => {
 //       response.status(200).json("ok");
 //     });
 // };
-const trx = async (request, response) => {
+const putSalidaLimpieza = async (request, response) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN'); // Start the transaction
@@ -50,5 +55,5 @@ const trx = async (request, response) => {
 
 module.exports = {
   getAllSalidaLimpieza,
-  trx 
+  putSalidaLimpieza 
 };
